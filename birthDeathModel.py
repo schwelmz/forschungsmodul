@@ -22,9 +22,9 @@ def birth_death(lam, sigma, mu, init_val, tend, nsteps):
     model.add_parameter([birth_rate, death_rate, immigration_rate])
 
     # Define reactions
-    birth_reaction = Reaction(name="birth", reactants={A: 2}, products={A: 3}, rate=birth_rate)
-    death_reaction = Reaction(name="death", reactants={A: 1}, products={}, rate=death_rate)
-    immigration_reaction = Reaction(name="immigration", reactants={}, products={A: 1}, rate=immigration_rate)
+    birth_reaction = Reaction(name="birth", reactants={A: 2}, products={A: 3}, propensity_function='birth_rate/2 * A * (A-1)')
+    death_reaction = Reaction(name="death", reactants={A: 1}, products={}, propensity_function= 'death_rate * A')
+    immigration_reaction = Reaction(name="immigration", reactants={}, products={A: 1}, propensity_function= 'immigration_rate')
 
     # Add reactions to the model
     model.add_reaction([birth_reaction, death_reaction, immigration_reaction])
@@ -35,36 +35,37 @@ def birth_death(lam, sigma, mu, init_val, tend, nsteps):
 
     return model
 
-#print settings
-tend = 5
-nsteps = 100
+#settings
+tend = 1000
+nsteps = 1001
 print("tend=",tend,"nsteps=",nsteps)
-lam = 0.01
-sigma = 1
-mu = 0.5
+init_population = 84.36e6
+lam = 0.5*738819/init_population  #birth rate (0.01)
+sigma = 2*1.066e6/init_population   #death_rate (1)
+mu = 0.5*17.3e-3    #immigration rate (0.5)
 print("lambda=",lam,"sigma=",sigma,"mu=",mu)
-Omega = mu/lam
-delta_squared = 1- 2*sigma*lam/(mu**2)
-delta = np.sqrt(delta_squared)
+Omega = sigma/lam
+delta_squared = 1- 2*mu*lam/(sigma**2)
 print("Omega=",Omega," delta^2=",delta_squared)
+delta = np.sqrt(delta_squared)
 n1 = Omega*(1-delta)
 n2 = Omega*(1+delta)
 print("n1=",n1,"n2=",n2)
-relaxation_time = 1/(mu*delta)
-print("tau_r=",relaxation_time)
 
 # Run the simulation
-for i in np.linspace(n1,n2+3,8):
+NoT = 100
+for i in [(n2-n1)/2]: #np.linspace(np.maximum(0,int(n1-(n2-n1)/4)), int(n2+(n2-n1)/4), 10):
     print("running with initial value A0=",int(i))
     model = birth_death(lam, sigma, mu, int(i), tend, nsteps)
-    results = model.run(number_of_trajectories=1, algorithm = "ODE")
-    plt.plot(results['time'], results['A'],color="magenta")
+    results = model.run(number_of_trajectories=NoT, algorithm = "SSA")
+    results.plot(title="Stochastic")
+    #plt.plot(results['time'], results['A'])
 
 # Plot the results
 plt.axhline(y=n1, linestyle='--', label="n1", color="red")
 plt.axhline(y=n2, linestyle='--', label="n2", color="blue")
-plt.axvline(x=relaxation_time, linestyle='--', color='black')
 plt.xlabel('Time')
 plt.ylabel('Population Size')
+plt.ylim(np.maximum(0,int(n1-(n2-n1)/4)-5), int(n2+(n2-n1)/4)+5)
 plt.legend()
 plt.show()
