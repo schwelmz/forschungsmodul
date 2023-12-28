@@ -37,7 +37,7 @@ def birth_death(lam, sigma, mu, init_val, tend, nsteps):
 
 #settings
 tend = 1000
-nsteps = 1001
+nsteps = 2001
 print("tend=",tend,"nsteps=",nsteps)
 init_population = 84.36e6
 lam = 0.5*738819/init_population  #birth rate (0.01)
@@ -53,13 +53,11 @@ n2 = Omega*(1+delta)
 print("n1=",n1,"n2=",n2)
 
 # Run the simulation
-NoT = 100
-for i in [(n2-n1)/2]: #np.linspace(np.maximum(0,int(n1-(n2-n1)/4)), int(n2+(n2-n1)/4), 10):
+for i in np.linspace(np.maximum(0,int(n1-(n2-n1)/2)), int(n2+(n2-n1)/2), 15):
     print("running with initial value A0=",int(i))
     model = birth_death(lam, sigma, mu, int(i), tend, nsteps)
-    results = model.run(number_of_trajectories=NoT, algorithm = "SSA")
-    results.plot(title="Stochastic")
-    #plt.plot(results['time'], results['A'])
+    results = model.run(number_of_trajectories=1, algorithm = "ODE")
+    plt.plot(results['time'], results['A'])
 
 # Plot the results
 plt.axhline(y=n1, linestyle='--', label="n1", color="red")
@@ -68,4 +66,5 @@ plt.xlabel('Time')
 plt.ylabel('Population Size')
 plt.ylim(np.maximum(0,int(n1-(n2-n1)/4)-5), int(n2+(n2-n1)/4)+5)
 plt.legend()
+plt.title("Deterministic")
 plt.show()
