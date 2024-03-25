@@ -8,6 +8,7 @@ numpy = "*"
 matplotlib = "*"
 gillespy2 = "*"
 python-libsbml = "*"
+ipython = "*"
 
 [dev-packages]
 
