@@ -52,6 +52,9 @@ n1 = Omega*(1-delta)
 n2 = Omega*(1+delta)
 print("n1=",n1,"n2=",n2)
 
+#calc characteristic relaxation time
+tau = 1/(sigma*delta)
+
 # Run the simulation
 for i in np.linspace(np.maximum(0,int(n1-(n2-n1)/2)), int(n2+(n2-n1)/2), 15):
     print("running with initial value A0=",int(i))
@@ -62,9 +65,11 @@ for i in np.linspace(np.maximum(0,int(n1-(n2-n1)/2)), int(n2+(n2-n1)/2), 15):
 # Plot the results
 plt.axhline(y=n1, linestyle='--', label="n1", color="red")
 plt.axhline(y=n2, linestyle='--', label="n2", color="blue")
+plt.axvline(x=tau, linestyle='--', label='tau', color='black')
 plt.xlabel('Time')
 plt.ylabel('Population Size')
 plt.ylim(np.maximum(0,int(n1-(n2-n1)/4)-5), int(n2+(n2-n1)/4)+5)
+plt.xlim(0,tend)
 plt.legend()
 plt.title("Deterministic")
 plt.show()
