@@ -9,7 +9,7 @@ def birth_death(lam, sigma, mu, init_val, tend, nsteps):
     model = Model(name="BirthDeathImmigrationProcess")
 
     # Define species
-    A = Species(name="A", initial_value=init_val)
+    A = Species(name="A", initial_value=init_val, mode='continuous')
 
     #reaction rates
     birth_rate = Parameter(name="birth_rate", expression=lam)
@@ -22,7 +22,7 @@ def birth_death(lam, sigma, mu, init_val, tend, nsteps):
     model.add_parameter([birth_rate, death_rate, immigration_rate])
 
     # Define reactions
-    birth_reaction = Reaction(name="birth", reactants={A: 2}, products={A: 3}, propensity_function='birth_rate/2 * A * (A-1)')
+    birth_reaction = Reaction(name="birth", reactants={A: 2}, products={A: 3}, propensity_function='birth_rate/2*pow(A,2)')
     death_reaction = Reaction(name="death", reactants={A: 1}, products={}, propensity_function= 'death_rate * A')
     immigration_reaction = Reaction(name="immigration", reactants={}, products={A: 1}, propensity_function= 'immigration_rate')
 
@@ -36,8 +36,9 @@ def birth_death(lam, sigma, mu, init_val, tend, nsteps):
     return model
 
 #settings
-tend = 1000
-nsteps = 2001
+tend = 100
+nsteps = 200
+tspace = np.linspace(0,tend,nsteps)
 print("tend=",tend,"nsteps=",nsteps)
 init_population = 84.36e6
 lam = 0.5*738819/init_population  #birth rate (0.01)
@@ -56,20 +57,38 @@ print("n1=",n1,"n2=",n2)
 tau = 1/(sigma*delta)
 
 # Run the simulation
-for i in np.linspace(np.maximum(0,int(n1-(n2-n1)/2)), int(n2+(n2-n1)/2), 15):
-    print("running with initial value A0=",int(i))
-    model = birth_death(lam, sigma, mu, int(i), tend, nsteps)
+fig1, ax1 = plt.subplots(figsize=(12,8))
+fig2, axs2 = plt.subplots(5,1,figsize=(8,12),layout="constrained")
+
+pdx = 0
+for i in [n1+0.1, n1+1, n1+4, n1+7, n1+(n2-n1-0.1)]: #np.linspace(np.maximum(0,int(n1-(n2-n1)/2)), int(n2+(n2-n1)/2), 7):
+    print("running with initial value A0=",i)
+    model = birth_death(lam, sigma, mu, i, tend, nsteps)
     results = model.run(number_of_trajectories=1, algorithm = "ODE")
-    plt.plot(results['time'], results['A'])
+    #plot 1
+    ax1.plot(results['time'], abs(results['A']), label=f"model A0={round(i,3)}")
+    #plot 2
+    offset = i - n1
+    f_compare = offset*np.exp(-1/tau*tspace)
+    axs2[pdx].plot(results['time'], results['A']-n1, label=f"model A0={round(i,3)}")
+    axs2[pdx].plot(results['time'], f_compare, label="comparison", linestyle="--")
+    # axs2[pdx].axhline(y=n1, linestyle='--', label="n1", color="red")
+    axs2[pdx].set_title(f"offset = {round(offset,3)}")
+    axs2[pdx].legend()
+    pdx += 1
 
 # Plot the results
-plt.axhline(y=n1, linestyle='--', label="n1", color="red")
-plt.axhline(y=n2, linestyle='--', label="n2", color="blue")
-plt.axvline(x=tau, linestyle='--', label='tau', color='black')
-plt.xlabel('Time')
-plt.ylabel('Population Size')
-plt.ylim(np.maximum(0,int(n1-(n2-n1)/4)-5), int(n2+(n2-n1)/4)+5)
-plt.xlim(0,tend)
-plt.legend()
-plt.title("Deterministic")
+ax1.axhline(y=n1, linestyle='--', label="n1", color="red")
+ax1.axhline(y=n2, linestyle='--', label="n2", color="blue")
+ax1.set_xlabel('Time')
+ax1.set_ylabel('Population Size')
+ax1.set_ylim(np.maximum(0,int(n1-(n2-n1)/4)-5), int(n2+(n2-n1)/4)+5)
+ax1.set_xlim(0,tend)
+ax1.legend()
+
+# Plot 2
+# axs2.set_xlabel('Time')
+# axs2.set_ylabel('Population Size')
+# axs2.set_xlim(0,tend)
+
 plt.show()
