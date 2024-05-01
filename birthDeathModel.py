@@ -36,7 +36,7 @@ def birth_death(lam, sigma, mu, init_val, tend, nsteps):
     return model
 
 #settings
-tend = 100
+tend = 600
 nsteps = 200
 tspace = np.linspace(0,tend,nsteps)
 print("tend=",tend,"nsteps=",nsteps)
@@ -58,10 +58,10 @@ tau = 1/(sigma*delta)
 
 # Run the simulation
 fig1, ax1 = plt.subplots(figsize=(12,8))
-fig2, axs2 = plt.subplots(5,1,figsize=(8,12),layout="constrained")
+fig2, axs2 = plt.subplots(6,1,figsize=(8,12),layout="constrained")
 
 pdx = 0
-for i in [n1+0.1, n1+1, n1+4, n1+7, n1+(n2-n1-0.1)]: #np.linspace(np.maximum(0,int(n1-(n2-n1)/2)), int(n2+(n2-n1)/2), 7):
+for i in [0, n1+1, n1+4, n1+7, n1+(n2-n1-0.1), 12]: #np.linspace(np.maximum(0,int(n1-(n2-n1)/2)), int(n2+(n2-n1)/2), 7):
     print("running with initial value A0=",i)
     model = birth_death(lam, sigma, mu, i, tend, nsteps)
     results = model.run(number_of_trajectories=1, algorithm = "ODE")
@@ -82,7 +82,7 @@ ax1.axhline(y=n1, linestyle='--', label="n1", color="red")
 ax1.axhline(y=n2, linestyle='--', label="n2", color="blue")
 ax1.set_xlabel('Time')
 ax1.set_ylabel('Population Size')
-ax1.set_ylim(np.maximum(0,int(n1-(n2-n1)/4)-5), int(n2+(n2-n1)/4)+5)
+ax1.set_ylim(np.maximum(0,int(n1-(n2-n1)/4)-5)-1, int(n2+(n2-n1)/4)+2)
 ax1.set_xlim(0,tend)
 ax1.legend()
 
