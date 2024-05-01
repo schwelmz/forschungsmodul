@@ -37,5 +37,4 @@ def histogram(ax,results,NoT,bins):
 
 def heatmap(fig, ax, results,t_decay,increment):
     im=ax.imshow(results[:,::increment],aspect='auto')
-    ax.axvline(x=t_decay,color='red')
     fig.colorbar(im)
