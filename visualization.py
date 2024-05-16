@@ -38,3 +38,4 @@ def histogram(ax,results,NoT,bins):
 def heatmap(fig, ax, results,t_decay,increment):
     im=ax.imshow(results[:,::increment],aspect='auto')
     fig.colorbar(im)
+

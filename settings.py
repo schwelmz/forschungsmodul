@@ -25,7 +25,7 @@ def read_parameters():
     delta = np.sqrt(delta_squared)
     n1 = Omega*(1-delta)
     n2 = Omega*(1+delta)
-    init_val = int(n1)
+    init_val = (n2-n1)//2#int(n1)
 
     #decay time
     f = lambda x: x - np.sqrt(8*mu/lam) * np.arctan(x*np.sqrt(lam/(2*mu)))
