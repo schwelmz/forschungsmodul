@@ -8,11 +8,11 @@ def plot(ax,results, nsteps, NoT, n1, n2, t_decay, increment):
     tspace = np.arange(nsteps)
     for idx in range(0, NoT):
         ax.plot(tspace[::increment], results[idx,::increment])
-    ax.axhline(y=n1, linestyle='--', label="n1", color="red")
-    ax.axhline(y=n2, linestyle='--', label="n2", color="blue")
+    # ax.axhline(y=n1, linestyle='--', label="n1", color="red")
+    # ax.axhline(y=n2, linestyle='--', label="n2", color="blue")
     #ax.axvline(x=t_decay, color='lime', linestyle='--', label='decay time')
-    ax.set_xlabel('Time')
-    ax.set_ylabel('Population Size')
+    ax.set_xlabel(r'Time $t$')
+    ax.set_ylabel(r'Population Size $n$')
     ax.set_ylim(np.maximum(-1,int(n1-(n2-n1)/4)-5), int(n2+(n2-n1)/4)+5)
     ax.legend()
 

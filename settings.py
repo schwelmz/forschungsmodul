@@ -44,6 +44,7 @@ def print_settings():
     print('Number of trajectories =', numberOfTrajectories)
     print('Initial value: ', init_val)
     print('Omega =', Omega)
+    print('delta^2 =', delta**2)
     print('delta =', delta)
     print('n1 =', n1)
     print('n2 =', n2)

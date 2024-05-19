@@ -23,7 +23,7 @@ def create(lam, sigma, mu, init_val, tend, nsteps):
     model.add_parameter([birth_rate, death_rate, immigration_rate])
 
     # Define reactions
-    birth_reaction = Reaction(name="birth", reactants={A: 2}, products={A: 3}, propensity_function='birth_rate/2 * A * (A-1)')
+    birth_reaction = Reaction(name="birth", reactants={A: 2}, products={A: 3}, propensity_function='birth_rate/2 * A**2')
     death_reaction = Reaction(name="death", reactants={A: 1}, products={}, propensity_function= 'death_rate * A')
     immigration_reaction = Reaction(name="immigration", reactants={}, products={A: 1}, propensity_function= 'immigration_rate')
 

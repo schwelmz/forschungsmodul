@@ -11,9 +11,12 @@ import visualization
 #read parameters
 tend, nsteps, lam, sigma, mu, NoT, init_val, Omega, delta, n1, n2, t_decay = settings.read_parameters()
 
+plt.rcParams.update({'font.size': 18})
+
 #load results
-print('open file:',f"out/out_tend{'%.1e'%tend}_NoT{NoT}.npy")
-results_array = np.load(f"out/out_tend{'%.1e'%tend}_NoT{NoT}.npy")
+print('open file:',f"out/out_tend{'%.1e'%tend}_NoT{NoT}_lam{lam}_sigma{sigma}_mu{mu}.npy")
+results_array = np.load(f"out/out_tend{'%.1e'%tend}_NoT{NoT}_lam{lam}_sigma_{sigma}_mu{mu}.npy")
+# results_array = np.load(f"out/out_tend{'%.1e'%tend}_NoT{NoT}.npy")
 
 #plot each trajectory over time
 if False:
@@ -33,31 +36,35 @@ if False:
     #plt.savefig(f"../results/hist_tend{'%.1e'%nsteps}_NoT{NoT}.png")
 
 #visualize all trajectories via a heatmap
-if False:
+if True:
     fig3, ax3 = plt.subplots(figsize=(12,8))
-    visualization.heatmap(fig3,ax3,results_array,t_decay,1)
-    ax3.set_title(f"tend = {'%.1e'%nsteps}, trajectories = {NoT}, tau = {'%.1e'%t_decay}")
-    #plt.savefig(f"../results/heatmap_tend{'%.1e'%nsteps}_NoT{NoT}.png")
+    increment = 1
+    visualization.heatmap(fig3,ax3,results_array,t_decay,increment)
+    # ax3.set_title(f"tend = {'%.1e'%nsteps}, trajectories = {NoT}, tau = {'%.1e'%t_decay}")
+    plt.savefig(f"../results/heatmap_tend{'%.1e'%nsteps}_NoT{NoT}.png")
 
 
 #histogram time point of escape to infinity
-if False:
-    fig2, ax2 = plt.subplots(figsize=(12,8))
+if True:
+    fig4, ax4 = plt.subplots(figsize=(12,8))
     bins = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
-    visualization.histogram(ax2,results_array, NoT, bins)
-    ax2.set_title(f"tend = {'%.1e'%nsteps}, trajectories = {NoT}")
-    #plt.savefig(f"../results/hist_tend{'%.1e'%nsteps}_NoT{NoT}.png")
+    visualization.histogram(ax4,results_array, NoT, bins)
+    ax4.set_title(f"tend = {'%.1e'%nsteps}, trajectories = {NoT}")
+    plt.savefig(f"../results/hist_tend{'%.1e'%nsteps}_NoT{NoT}.png")
 
 #histogram of time points when escape happens
 if False:
-    fig2, ax2 = plt.subplots(figsize=(12,8))
+    fig5, ax5 = plt.subplots(figsize=(12,8))
     escape_points = np.argmax(results_array>20, axis=1)
-    escape_points = escape_points*100
-    binsize = 600000
+    print(escape_points)
+    escape_points = escape_points[escape_points != 0]
+    skips = tend/nsteps
+    escape_points = escape_points*skips
+    binsize = 100000
     style = {'facecolor': 'C1', 'edgecolor':'black', 'linewidth': 2}
-    ax2.hist(escape_points,bins=np.arange(0,tend,binsize),**style)
-    ax2.set_xlabel('timepoint of escape')
-    ax2.set_ylabel('number of trajectories')
-    plt.savefig(f"../results/hist2_tend{'%.1e'%tend}_NoT{NoT}.png")
+    ax5.hist(escape_points,bins=np.arange(0,tend,binsize),**style)
+    ax5.set_xlabel('timepoint of escape')
+    ax5.set_ylabel('number of trajectories')
+    # plt.savefig(f"../results/hist2_tend{'%.1e'%tend}_NoT{NoT}_lam{lam}_sigma{sigma}_mu{mu}.png")
 
 plt.show()
