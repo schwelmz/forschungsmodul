@@ -2,6 +2,13 @@
 
 For the stochastic simulations switch to the branch "stochastic".
 
+## Requirements
+The following python packages need to be installed:
+- matplotlib
+- numpy
+- gillespy2
+- configparser
+
 ## Usage
 - The model parameters $\lambda$, $\sigma$ and $\mu$ as well as the simulation time and time steps can be modified in the parameter.ini file.
 - The initial populations have to be set directly in the file main.py.
