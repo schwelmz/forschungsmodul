@@ -84,7 +84,7 @@ for i in [n1+0.1, n1+1, n1+2, n1+10]: #np.linspace(np.maximum(0,int(n1-(n2-n1)/2
     offset = i - n1
     f_compare = offset*np.exp(-1/tau*tspace)
     axs2[pdx].plot(results['time'], results['A']-n1, label=rf"$\bar n(0)$ ={round(i,3)}")
-    axs2[pdx].plot(results['time'], f_compare, label=r"offset $\cdot \exp(-1\slash\tau\cdot t)$", linestyle="--")
+    axs2[pdx].plot(results['time'], f_compare, label=r"offset $\cdot \exp(-1\slash\tau_r\cdot t)$", linestyle="--")
     # axs2[pdx].axhline(y=n1, linestyle='--', label="n1", color="red")
     axs2[pdx].set_title(f"offset = {round(offset,3)}")
     axs2[pdx].legend()
@@ -105,5 +105,5 @@ axs2[2].set_ylabel(r'avg. population size $\bar n$')
 # axs2.set_xlim(0,tend)
 
 #fig1.savefig("../results/birthDeath_ODE_2.png")
-# fig2.savefig("../results/relaxationTime.png")
+fig2.savefig("../results/relaxationTime.png")
 plt.show()
